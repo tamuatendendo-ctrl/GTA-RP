@@ -154,6 +154,200 @@
   .field-label {
     font-weight: bold;
   }
+
+
+  /* Identidade visual hospitalar: interface leve, verde clínico e sem molduras azuis */
+  :root {
+    --hospital-green: #008f5a;
+    --hospital-green-dark: #086747;
+    --hospital-ink: #23352f;
+    --hospital-muted: #65756f;
+    --hospital-line: #dce7e2;
+    --hospital-page: #f5f8f7;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    background: var(--hospital-page);
+    color: var(--hospital-ink);
+  }
+
+  header {
+    background: linear-gradient(120deg, #07583f 0%, #008f5a 72%, #0b9c68 100%);
+    color: #fff;
+    padding: 28px 24px 26px;
+    text-align: left;
+    border: 0;
+    border-radius: 0;
+    box-shadow: 0 2px 8px rgba(20, 65, 48, .08);
+  }
+
+  header h1 {
+    max-width: 1320px;
+    margin: 0 auto;
+    font-size: clamp(1.45rem, 2.3vw, 2rem);
+    line-height: 1.25;
+    font-weight: 700;
+    letter-spacing: -.025em;
+  }
+
+  header p {
+    max-width: 1320px;
+    margin: 8px auto 0;
+    font-size: 1rem;
+    color: rgba(255,255,255,.88);
+  }
+
+  main {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(360px, .92fr);
+    align-items: start;
+    max-width: 1480px;
+    margin: 0 auto;
+    padding: 28px clamp(18px, 3vw, 42px) 36px;
+    gap: clamp(24px, 3vw, 44px);
+    justify-content: initial;
+  }
+
+  .form-container, .certidao-container {
+    min-width: 0;
+    width: 100%;
+    background: transparent;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .form-container h2, .certidao-container > h2 {
+    margin: 0 0 20px;
+    padding: 0 0 12px;
+    color: var(--hospital-green-dark);
+    font-size: 1.2rem;
+    font-weight: 700;
+    border-bottom: 1px solid var(--hospital-line);
+    letter-spacing: -.01em;
+  }
+
+  label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 6px;
+    color: #344740;
+    font-size: .92rem;
+    font-weight: 650;
+  }
+
+  input[type="text"], input[type="number"], input[type="date"], input[type="time"], textarea {
+    display: block;
+    width: 100%;
+    min-height: 43px;
+    padding: 10px 12px;
+    border-radius: 7px;
+    border: 1px solid #cbd8d2;
+    background: #fff;
+    color: #24352f;
+    font-family: inherit;
+    font-size: .96rem;
+    box-sizing: border-box;
+    box-shadow: 0 1px 2px rgba(20, 50, 38, .025);
+    transition: border-color .15s ease, box-shadow .15s ease;
+  }
+
+  input::placeholder, textarea::placeholder { color: #8b9993; }
+
+  input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--hospital-green);
+    box-shadow: 0 0 0 3px rgba(0,143,90,.12);
+  }
+
+  textarea { resize: vertical; min-height: 110px; line-height: 1.5; }
+
+  button {
+    margin-top: 20px;
+    padding: 11px 18px;
+    border: 1px solid var(--hospital-green);
+    background: var(--hospital-green);
+    color: #fff;
+    border-radius: 7px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: .95rem;
+    font-weight: 650;
+    transition: background .15s ease, transform .15s ease;
+  }
+
+  button:hover { background: var(--hospital-green-dark); border-color: var(--hospital-green-dark); }
+  button:active { transform: translateY(1px); }
+
+  .btn-group {
+    margin-top: 16px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .btn-group button { margin-top: 0; }
+
+  .certidao-container { max-width: none; }
+
+  .certidao {
+    border: 1px solid #d5e1dc;
+    border-top: 4px solid var(--hospital-green);
+    padding: clamp(20px, 2.3vw, 32px);
+    border-radius: 8px;
+    background: #fff;
+    color: #26342f;
+    min-height: 400px;
+    position: relative;
+    font-family: "Times New Roman", Georgia, serif;
+    font-size: 1rem;
+    box-shadow: 0 5px 18px rgba(22, 56, 42, .055);
+    overflow-wrap: anywhere;
+  }
+
+  .certidao .logos {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 22px;
+  }
+
+  .certidao .logos img { max-height: 64px; max-width: 42%; height: auto; object-fit: contain; }
+
+  .certidao h2 {
+    text-align: center;
+    margin: 0 0 20px;
+    padding: 0 0 12px;
+    color: #243a32;
+    font-size: 1.35rem;
+    text-decoration: none;
+    border-bottom: 1px solid #d5e1dc;
+  }
+
+  .certidao p { margin: 9px 0; line-height: 1.5; }
+  .certidao hr { border: 0; border-top: 1px solid #d5e1dc; margin: 16px 0; }
+  .field-label { font-weight: bold; }
+
+  @media (max-width: 900px) {
+    main { grid-template-columns: minmax(0, 1fr); padding: 24px 20px 32px; gap: 32px; }
+    .certidao-container { max-width: none; }
+  }
+
+  @media (max-width: 520px) {
+    header { padding: 22px 18px; }
+    main { padding: 22px 16px 28px; }
+    .certidao { padding: 18px; }
+    .certidao .logos img { max-height: 48px; }
+    .btn-group { display: grid; grid-template-columns: 1fr; }
+    .btn-group button { width: 100%; }
+  }
+
 </style>
 </head>
 <body>
