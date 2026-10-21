@@ -349,32 +349,10 @@
   }
 
 
-  /* Navegação padronizada do Hospital Carapicuíba RP */
-  .portal-nav-wrap { max-width: 1400px; margin: 12px auto 0; padding: 0 20px; }
-  .portal-nav {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 10px 16px; border-radius: 10px;
-    background: #008b5a; color: #fff !important; text-decoration: none;
-    font: 700 14px/1.2 Arial, sans-serif; border: 1px solid #00764c;
-    box-shadow: 0 3px 10px rgba(0,0,0,.08);
-  }
-  .portal-nav:hover { background: #006e48; }
-  input:focus, textarea:focus, select:focus {
-    outline: 2px solid #008b5a; outline-offset: 1px;
-  }
-  input:invalid:focus, textarea:invalid:focus {
-    outline-color: #b42318;
-  }
-  .validation-note {
-    margin-top: 10px; color: #60756e; font: 13px/1.5 Arial, sans-serif;
-  }
-  @media (max-width: 520px) {
-    .portal-nav-wrap { padding: 0 12px; }
-    .portal-nav { width: 100%; box-sizing: border-box; justify-content: center; }
-    header h1 { font-size: 1.35rem; }
-    .form-container, .certidao-container { min-width: 0 !important; width: 100%; box-sizing: border-box; }
-    input, textarea, button { max-width: 100%; box-sizing: border-box; }
-  }
+  .portal-return-wrap { margin-top: 14px; }
+  .portal-return { display: inline-block; padding: 10px 16px; background: #ffffff; color: #0b4d7a; border: 2px solid #ffffff; border-radius: 7px; font: 600 15px Arial, sans-serif; text-decoration: none; cursor: pointer; }
+  .portal-return:hover { background: #eaf3f8; color: #083957; }
+  .portal-return:focus-visible { outline: 3px solid #f4cf55; outline-offset: 3px; }
 
 </style>
 </head>
@@ -383,12 +361,8 @@
 <header>
   <h1>Preenchimento de Laudo Psicológico - Carapicuíba RP</h1>
   <p>Hospital Carapicuíba RP - UNIMED</p>
+  <div class="portal-return-wrap"><a class="portal-return" href="https://gta-rp-site.streamlit.app/" target="_blank" rel="noopener noreferrer">← Voltar ao Portal do Hospital</a></div>
 </header>
-
-<div class="portal-nav-wrap">
-  <a class="portal-nav" href="https://gta-rp-site.streamlit.app/" target="_top" rel="noopener noreferrer" aria-label="Voltar ao portal do Hospital Carapicuíba RP">← Voltar ao Portal do Hospital</a>
-</div>
-
 
 <main>
   <!-- Formulário -->
@@ -531,26 +505,6 @@
     alert('Não foi possível exportar o documento. ' + (err?.message || 'Atualize a página e tente novamente.'));
   }
 
-  // Validação complementar: impede campos de texto contendo apenas espaços.
-  const formularioHospital = document.getElementById('obitoForm');
-  if (formularioHospital) {
-    formularioHospital.addEventListener('submit', function (event) {
-      const camposTexto = Array.from(formularioHospital.querySelectorAll('input[type="text"], textarea'));
-      let primeiroInvalido = null;
-      camposTexto.forEach(function (campo) {
-        campo.value = campo.value.trim();
-        if (campo.required && !campo.value && !primeiroInvalido) primeiroInvalido = campo;
-      });
-      if (primeiroInvalido) {
-        event.preventDefault();
-        alert('Preencha os campos obrigatórios antes de gerar o documento.');
-        primeiroInvalido.focus();
-      }
-    }, true);
-  }
-
-
-
   document.getElementById('exportPDF').addEventListener('click', async () => {
     try {
       if (!window.jspdf || typeof window.jspdf.jsPDF !== 'function') {
@@ -565,16 +519,7 @@
       const pageHeight = pdf.internal.pageSize.getHeight();
       const width = pageWidth - margin * 2;
       const height = canvas.height * width / canvas.width;
-      let remainingHeight = height;
-      let yPosition = margin;
-      pdf.addImage(imgData, 'PNG', margin, yPosition, width, height);
-      remainingHeight -= pageHeight - margin * 2;
-      while (remainingHeight > 0) {
-        pdf.addPage();
-        yPosition = margin - (height - remainingHeight);
-        pdf.addImage(imgData, 'PNG', margin, yPosition, width, height);
-        remainingHeight -= pageHeight - margin * 2;
-      }
+      pdf.addImage(imgData, 'PNG', margin, margin, width, height);
       pdf.save('laudo_psicologico.pdf');
     } catch (err) {
       erroExportacao(err);
