@@ -348,23 +348,24 @@
     .btn-group button { width: 100%; }
   }
 
-
-  /* Botão de retorno alinhado à direita no cabeçalho */
-  header { position: relative; }
-  
-  .portal-return { display: inline-block; padding: 10px 16px; background: #ffffff; color: #0b4d7a; border: 2px solid #ffffff; border-radius: 7px; font: 600 15px Arial, sans-serif; text-decoration: none; cursor: pointer; white-space: nowrap; }
-  .portal-return:hover { background: #eaf3f8; color: #083957; }
-  .portal-return:focus-visible { outline: 3px solid #f4cf55; outline-offset: 3px; }
-  @media (max-width: 480px) {
-    header { padding-bottom: 18px; }
-    
-  }
-
-
-  input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-visible {
-    outline: 3px solid #65bd98;
+  /* Acessibilidade: foco visível e consistente para teclado */
+  input:focus-visible, textarea:focus-visible, select:focus-visible,
+  button:focus-visible, a:focus-visible {
+    outline: 3px solid #55bd91;
     outline-offset: 2px;
   }
+  button:focus-visible { box-shadow: 0 0 0 3px rgba(0,143,90,.16); }
+
+  /* Responsividade complementar em telas muito estreitas */
+  @media (max-width: 380px) {
+    header h1 { font-size: 1.25rem; overflow-wrap: anywhere; }
+    header p { font-size: .92rem; }
+    main { padding-left: 12px; padding-right: 12px; }
+    .certidao { padding: 14px; font-size: .94rem; }
+    .certidao .logos { gap: 10px; }
+    .certidao .logos img { max-width: 46%; max-height: 42px; }
+  }
+
 </style>
 </head>
 <body>
@@ -372,7 +373,6 @@
 <header>
   <h1>Preenchimento de Certidão de Óbito - Carapicuíba RP</h1>
   <p>Hospital Carapicuíba RP - UNIMED</p>
-  
 </header>
 
 <main>
@@ -439,20 +439,24 @@
   const form = document.getElementById('obitoForm');
   const certidao = document.getElementById('certidao');
 
+  form.querySelectorAll('input[type="text"][required], textarea[required]').forEach(campo => {
+    campo.addEventListener('input', () => campo.setCustomValidity(''));
+  });
+
   // Gerar certidão
   form.addEventListener('submit', function(e){
     e.preventDefault();
-    const camposTexto = Array.from(form.querySelectorAll('input[type="text"], textarea'));
-    for (const campo of camposTexto) {
-      if (!campo.value.trim()) {
-        campo.setCustomValidity('Este campo é obrigatório.');
+
+    // Validação complementar: campos textuais obrigatórios não podem conter só espaços.
+    const camposTextoObrigatorios = Array.from(form.querySelectorAll('input[type="text"][required], textarea[required]'));
+    for (const campo of camposTextoObrigatorios) {
+      campo.setCustomValidity(campo.value.trim() ? '' : 'Preencha este campo com um texto válido.');
+      if (!campo.checkValidity()) {
         campo.reportValidity();
-        campo.addEventListener('input', () => campo.setCustomValidity(''), { once: true });
+        campo.focus();
         return;
       }
-      campo.setCustomValidity('');
     }
-
 
     const numero = document.getElementById('numero').value;
     const dataISO = document.getElementById('data').value;
