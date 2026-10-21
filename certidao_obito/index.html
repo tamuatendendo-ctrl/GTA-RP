@@ -347,6 +347,24 @@
     .btn-group { display: grid; grid-template-columns: 1fr; }
     .btn-group button { width: 100%; }
   }
+
+
+  /* Botão de retorno alinhado à direita no cabeçalho */
+  header { position: relative; }
+  
+  .portal-return { display: inline-block; padding: 10px 16px; background: #ffffff; color: #0b4d7a; border: 2px solid #ffffff; border-radius: 7px; font: 600 15px Arial, sans-serif; text-decoration: none; cursor: pointer; white-space: nowrap; }
+  .portal-return:hover { background: #eaf3f8; color: #083957; }
+  .portal-return:focus-visible { outline: 3px solid #f4cf55; outline-offset: 3px; }
+  @media (max-width: 480px) {
+    header { padding-bottom: 18px; }
+    
+  }
+
+
+  input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-visible {
+    outline: 3px solid #65bd98;
+    outline-offset: 2px;
+  }
 </style>
 </head>
 <body>
@@ -354,6 +372,7 @@
 <header>
   <h1>Preenchimento de Certidão de Óbito - Carapicuíba RP</h1>
   <p>Hospital Carapicuíba RP - UNIMED</p>
+  
 </header>
 
 <main>
@@ -423,6 +442,17 @@
   // Gerar certidão
   form.addEventListener('submit', function(e){
     e.preventDefault();
+    const camposTexto = Array.from(form.querySelectorAll('input[type="text"], textarea'));
+    for (const campo of camposTexto) {
+      if (!campo.value.trim()) {
+        campo.setCustomValidity('Este campo é obrigatório.');
+        campo.reportValidity();
+        campo.addEventListener('input', () => campo.setCustomValidity(''), { once: true });
+        return;
+      }
+      campo.setCustomValidity('');
+    }
+
 
     const numero = document.getElementById('numero').value;
     const dataISO = document.getElementById('data').value;
