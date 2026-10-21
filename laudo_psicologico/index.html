@@ -349,6 +349,22 @@
   }
 
 
+  /* Botão de retorno alinhado à direita no cabeçalho */
+  header { position: relative; }
+  
+  .portal-return { display: inline-block; padding: 10px 16px; background: #ffffff; color: #0b4d7a; border: 2px solid #ffffff; border-radius: 7px; font: 600 15px Arial, sans-serif; text-decoration: none; cursor: pointer; white-space: nowrap; }
+  .portal-return:hover { background: #eaf3f8; color: #083957; }
+  .portal-return:focus-visible { outline: 3px solid #f4cf55; outline-offset: 3px; }
+  @media (max-width: 480px) {
+    header { padding-bottom: 18px; }
+    
+  }
+
+
+  input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-visible {
+    outline: 3px solid #65bd98;
+    outline-offset: 2px;
+  }
 </style>
 </head>
 <body>
@@ -356,6 +372,7 @@
 <header>
   <h1>Preenchimento de Laudo Psicológico - Carapicuíba RP</h1>
   <p>Hospital Carapicuíba RP - UNIMED</p>
+  
 </header>
 
 <main>
@@ -425,6 +442,17 @@
   // Gerar laudo psicológico
   form.addEventListener('submit', function(e) {
     e.preventDefault();
+    const camposTexto = Array.from(form.querySelectorAll('input[type="text"], textarea'));
+    for (const campo of camposTexto) {
+      if (!campo.value.trim()) {
+        campo.setCustomValidity('Este campo é obrigatório.');
+        campo.reportValidity();
+        campo.addEventListener('input', () => campo.setCustomValidity(''), { once: true });
+        return;
+      }
+      campo.setCustomValidity('');
+    }
+
 
     const numero = document.getElementById('numero').value;
     const dataISO = document.getElementById('data').value;
@@ -505,15 +533,32 @@
         throw new Error('A biblioteca de PDF não carregou. Verifique a conexão com a internet e atualize a página.');
       }
       const canvas = await prepararParaExportar();
-      const imgData = canvas.toDataURL('image/png');
       const { jsPDF } = window.jspdf;
       const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
       const margin = 10;
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
-      const width = pageWidth - margin * 2;
-      const height = canvas.height * width / canvas.width;
-      pdf.addImage(imgData, 'PNG', margin, margin, width, height);
+      const usableWidth = pageWidth - margin * 2;
+      const usableHeight = pageHeight - margin * 2;
+      const pxPerMm = canvas.width / usableWidth;
+      const sliceMaxHeight = Math.max(1, Math.floor(usableHeight * pxPerMm));
+      let sourceY = 0;
+      let pageIndex = 0;
+      while (sourceY < canvas.height) {
+        const sliceHeight = Math.min(sliceMaxHeight, canvas.height - sourceY);
+        const pageCanvas = document.createElement('canvas');
+        pageCanvas.width = canvas.width;
+        pageCanvas.height = sliceHeight;
+        const ctx = pageCanvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+        ctx.drawImage(canvas, 0, sourceY, canvas.width, sliceHeight, 0, 0, canvas.width, sliceHeight);
+        if (pageIndex > 0) pdf.addPage();
+        const imgData = pageCanvas.toDataURL('image/png');
+        pdf.addImage(imgData, 'PNG', margin, margin, usableWidth, sliceHeight / pxPerMm);
+        sourceY += sliceHeight;
+        pageIndex += 1;
+      }
       pdf.save('laudo_psicologico.pdf');
     } catch (err) {
       erroExportacao(err);
