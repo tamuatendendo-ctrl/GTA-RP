@@ -283,6 +283,8 @@
 
   button:hover { background: var(--hospital-green-dark); border-color: var(--hospital-green-dark); }
   button:active { transform: translateY(1px); }
+  button.btn-limpar { background: #fff; color: var(--hospital-green-dark); border-color: #b8cfc4; margin-left: 8px; }
+  button.btn-limpar:hover { background: #edf5f1; border-color: var(--hospital-green); }
 
   .btn-group {
     margin-top: 16px;
@@ -405,6 +407,7 @@
       <input type="text" id="crm" placeholder="CRM do médico" required>
 
       <button type="submit">Gerar Certidão</button>
+      <button type="button" id="limparFormulario" class="btn-limpar">Limpar formulário</button>
     </form>
   </div>
 
@@ -438,6 +441,13 @@
 <script>
   const form = document.getElementById('obitoForm');
   const certidao = document.getElementById('certidao');
+  const conteudoInicialCertidao = certidao.innerHTML;
+
+  document.getElementById('limparFormulario').addEventListener('click', function() {
+    form.reset();
+    form.querySelectorAll('input, textarea').forEach(campo => campo.setCustomValidity(''));
+    certidao.innerHTML = conteudoInicialCertidao;
+  });
 
   form.querySelectorAll('input[type="text"][required], textarea[required]').forEach(campo => {
     campo.addEventListener('input', () => campo.setCustomValidity(''));
