@@ -580,7 +580,9 @@
       const canvas = await prepararParaExportar();
       const link = document.createElement('a');
       link.href = canvas.toDataURL('image/png');
-      link.download = 'laudo_psicologico.png';
+      const nomePaciente = document.getElementById('nome').value.trim().replace(/[^\p{L}\p{N}-]+/gu, '_').replace(/^_+|_+$/g, '');
+      const rgPaciente = document.getElementById('rg').value.trim().replace(/[^\p{L}\p{N}-]+/gu, '_').replace(/^_+|_+$/g, '');
+      link.download = `laudo_psicologico_${nomePaciente}_${rgPaciente}.png`;
       document.body.appendChild(link);
       link.click();
       link.remove();
