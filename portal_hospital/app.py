@@ -2,7 +2,7 @@ import streamlit as st
 from pathlib import Path
 
 st.set_page_config(
-    page_title="Hospital Carapicuíba RP - UNIMED",
+    page_title="Hospital Carapicuíba RP - UPA 24h",
     page_icon="🏥",
     layout="wide",
     initial_sidebar_state="collapsed",
@@ -67,7 +67,7 @@ with st.container():
         if LOGO_PATH.exists():
             st.image(str(LOGO_PATH), use_container_width=True)
         else:
-            st.markdown("**UNIMED**")
+            st.markdown("**UPA 24h**")
 
 st.markdown("""
 <div class="section-title">Sistemas disponíveis</div>
@@ -108,6 +108,6 @@ else:
 
 st.markdown("""
 <div class="portal-footer">
-  Hospital Carapicuíba RP - UNIMED · Portal de acesso aos formulários do GTA-RP
+  Hospital Carapicuíba RP - UPA 24h · Portal de acesso aos formulários do GTA-RP
 </div>
 """, unsafe_allow_html=True)
